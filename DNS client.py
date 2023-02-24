@@ -1,8 +1,11 @@
 import socket
 import struct
 import random
-URL
+
+
+
 # get response from url
+#TO-DO add time out functionality, and output the expected print messages
 def get_response(URL):
     #standard header for all queries change the sections marked if needed.
     header = []
