@@ -1,7 +1,7 @@
 import dns.resolver
 import binascii
 
-domain = 'gmu.edu'
+domain = 'www.gmu.edu'
 response = dns.resolver.query(domain, 'A', raise_on_no_answer=False)
 
 if response.rrset is not None:
