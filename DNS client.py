@@ -130,9 +130,8 @@ def concatBytes(x, y):
     return res
 
 
-print(len(sys.argv))
+url = "gmu.edu"
 if(len(sys.argv)>1):    
     url = sys.argv[1]
-url = "gmu.edu"
 get_response(url)
 parse_response(b'\t\xa6\x81\x80\x00\x01\x00\x01\x00\x00\x00\x00\x03www\x03gmu\x03edu\x00\x00\x01\x00\x01\xc0\x0c\x00\x01\x00\x01\x00\x00\x08\x89\x00\x04\xc0|\xf9D')
