@@ -1,15 +1,10 @@
 import socket
 import struct
 import random
-<<<<<<< HEAD
 import time
-=======
-
-
->>>>>>> 7c3695655758e3a64e84fe6aa918fca35416a321
+import sys
 
 # get response from url
-#TO-DO add time out functionality, and output the expected print messages
 def get_response(URL):
 
     print("Preparing DNS query..")
@@ -43,11 +38,12 @@ def get_response(URL):
     print("DNS query question section=", question)
 
     packet = header_query + question
-
     print("Complete DNS query=", packet)
+    
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     print("Contacting DNS server..")
     print("Sending DNS query..")
+    
     for i in range(1,4):
         sock.sendto(packet, ('8.8.8.8', 53))
         response, address = sock.recvfrom(16384)
@@ -134,8 +130,9 @@ def concatBytes(x, y):
     return res
 
 
-
-
+print(len(sys.argv))
+if(len(sys.argv)>1):    
+    url = sys.argv[1]
 url = "gmu.edu"
 get_response(url)
 parse_response(b'\t\xa6\x81\x80\x00\x01\x00\x01\x00\x00\x00\x00\x03www\x03gmu\x03edu\x00\x00\x01\x00\x01\xc0\x0c\x00\x01\x00\x01\x00\x00\x08\x89\x00\x04\xc0|\xf9D')
