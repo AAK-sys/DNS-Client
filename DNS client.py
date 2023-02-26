@@ -1,9 +1,13 @@
 import socket
 import struct
 import random
-URL
+import time
+
 # get response from url
 def get_response(URL):
+
+    print("Preparing DNS query..")
+    
     #standard header for all queries change the sections marked if needed.
     header = []
     #header ID
@@ -19,6 +23,10 @@ def get_response(URL):
     #additional count
     header.append(0)
 
+    header_query = struct.pack('!HHHHHH', header[0], header[1], header[2], header[3], header[4], header[5])
+
+    print("DNS query header=", header_query)
+
     #dynamic part of the query
     question = b''
     for i in URL.split('.'):
@@ -26,12 +34,27 @@ def get_response(URL):
     question += b'\x00' #end of domain name marker
     question += struct.pack('!HH', 1, 1) #qtype and qclass
 
-    packet = struct.pack('!HHHHHH', header[0], header[1], header[2], header[3], header[4], header[5]) + question
-    socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    socket.sendto(packet, ('8.8.8.8', 53))
-    response, address = socket.recvfrom(16384)
-    socket.close()
+    print("DNS query question section=", question)
 
+    packet = header_query + question
+
+    print("Complete DNS query=", packet)
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    print("Contacting DNS server..")
+    print("Sending DNS query..")
+    for i in range(1,4):
+        sock.sendto(packet, ('8.8.8.8', 53))
+        response, address = sock.recvfrom(16384)
+        if(response!=None):
+            print("DNS response received (attempt",i," of 3)")
+            break
+        elif(i==3):
+            print("Request timed out")
+            exit()
+        time.sleep(5)
+    sock.close()
+    print("processing DNS response..")
+    print('-' * 85)
     return response
 
 #parse the dns server response
@@ -51,5 +74,5 @@ def parse_response(hexastring):
     for i in range(2): header_id_bytes.append(header_bytes[i])
 
 
-url = "gmu.edu"
+url = "www.google.com"
 parse_response(get_response(url))
