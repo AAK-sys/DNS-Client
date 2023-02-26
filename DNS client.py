@@ -1,12 +1,7 @@
 import socket
 import struct
 import random
-<<<<<<< HEAD
 import time
-=======
-
-
->>>>>>> 7c3695655758e3a64e84fe6aa918fca35416a321
 
 # get response from url
 #TO-DO add time out functionality, and output the expected print messages
