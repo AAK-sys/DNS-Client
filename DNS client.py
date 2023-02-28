@@ -123,20 +123,28 @@ def parse_response(hexastring):
         # Getting record type
         rr_type = concatBytes(hexastring[pos], hexastring[pos+1])
         pos += 2
+        record.append(rr_type)
         # Getting record class
         rr_class = concatBytes(hexastring[pos], hexastring[pos+1])
         pos += 2
+        record.append(rr_class)
         # Getting TTL / time to live
         rr_ttl = concatBytes(concatBytes(concatBytes(hexastring[pos], hexastring[pos+1]), hexastring[pos+2]), hexastring[pos+3])
         pos += 4
+        record.append(rr_ttl)
         # Getting rd length
         rr_rdlength = concatBytes(hexastring[pos], hexastring[pos+1])
+        pos += 2
+        record.append(rr_rdlength)
+        # Getting rdata
+        rr_rdata = hexastring[pos]
+        for j in range(rr_rdlength-1):
+            pos += 1
+            rr_rdata = concatBytes(rr_rdata, hexastring[pos])
+        record.append(rr_rdata)
+        resource_records.append(record)
     
-    print(rr_rdlength)
-    # Get RDATA
-
-        
-
+    
 
     # print(hexastring[12])
     # print(chr(hexastring[13]))
