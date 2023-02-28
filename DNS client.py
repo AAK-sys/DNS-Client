@@ -115,7 +115,26 @@ def parse_response(hexastring):
         question.append(qclass)
         questions.append(question)
     
-    print(questions)
+    resource_records = []
+    for i in range(header_an_count):
+        record = []
+        # Skipping RR name
+        pos += 2
+        # Getting record type
+        rr_type = concatBytes(hexastring[pos], hexastring[pos+1])
+        pos += 2
+        # Getting record class
+        rr_class = concatBytes(hexastring[pos], hexastring[pos+1])
+        pos += 2
+        # Getting TTL / time to live
+        rr_ttl = concatBytes(concatBytes(concatBytes(hexastring[pos], hexastring[pos+1]), hexastring[pos+2]), hexastring[pos+3])
+        pos += 4
+        # Getting rd length
+        rr_rdlength = concatBytes(hexastring[pos], hexastring[pos+1])
+    
+    print(rr_rdlength)
+    # Get RDATA
+
         
 
 
@@ -136,5 +155,5 @@ def concatBytes(x, y):
 url = "gmu.edu"
 if(len(sys.argv)>1):    
     url = sys.argv[1]
-get_response(url)
+#get_response(url)
 parse_response(b'\x1f\x07\x81\x80\x00\x01\x00\x01\x00\x00\x00\x00\x03gmu\x03edu\x00\x00\x01\x00\x01\xc0\x0c\x00\x01\x00\x01\x00\x00\x0c\xeb\x00\x04\x81\xae\x86\x1c')
