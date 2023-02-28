@@ -57,6 +57,7 @@ def get_response(URL):
     sock.close()
     print("processing DNS response..")
     print('-' * 85)
+    print(response)
     return response
 
 #parse the dns server response
@@ -104,7 +105,6 @@ def parse_response(hexastring):
             domain.append(part)
             pos += 1
         question.append(domain)
-        pos += 1
         # Getting qtype
         qtype = concatBytes(hexastring[pos], hexastring[pos+1])
         pos += 2
@@ -115,9 +115,7 @@ def parse_response(hexastring):
         question.append(qclass)
         questions.append(question)
     
-    # Skipping name section
-    post += 2
-    
+    print(questions)
         
 
 
@@ -133,8 +131,10 @@ def concatBytes(x, y):
     return res
 
 
+# Testing Section.
+
 url = "gmu.edu"
 if(len(sys.argv)>1):    
     url = sys.argv[1]
-#get_response(url)
-parse_response(b'\t\xa6\x81\x80\x00\x01\x00\x01\x00\x00\x00\x00\x03www\x03gmu\x03edu\x00\x00\x01\x00\x01\xc0\x0c\x00\x01\x00\x01\x00\x00\x08\x89\x00\x04\xc0|\xf9D')
+get_response(url)
+parse_response(b'\x1f\x07\x81\x80\x00\x01\x00\x01\x00\x00\x00\x00\x03gmu\x03edu\x00\x00\x01\x00\x01\xc0\x0c\x00\x01\x00\x01\x00\x00\x0c\xeb\x00\x04\x81\xae\x86\x1c')
