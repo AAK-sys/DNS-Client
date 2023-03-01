@@ -4,11 +4,13 @@ import random
 import time
 import sys
 
+# TO-DO: fix a major bug that breaks the program when www. is used
+
 # get response from url
 def get_response(URL):
 
     print("Preparing DNS query..")
-    
+
     #standard header for all queries change the sections marked if needed.
     header = []
     #header ID
@@ -39,14 +41,14 @@ def get_response(URL):
 
     packet = header_query + question
     print("Complete DNS query=", packet)
-    
+
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     print("Contacting DNS server..")
     print("Sending DNS query..")
-    
+
     for i in range(1,4):
         sock.sendto(packet, ('8.8.8.8', 53))
-        response, address = sock.recvfrom(16384)
+        response, address = sock.recvfrom(1024)
         if(response!=None):
             print("DNS response received (attempt",i," of 3)")
             break
@@ -62,7 +64,7 @@ def get_response(URL):
 
 #parse the dns server response
 def parse_response(hexastring):
-    # gmu.edu response example. Some websites have multiple IP addresses that the dns resolves hence multiple 
+    # gmu.edu response example. Some websites have multiple IP addresses that the dns resolves hence multiple
     # hexadecimal responses or a longer hexadecimal. How this will affect the parsing is still unknown.
 
     # If standard response, process Header, Question, & Answer
@@ -70,7 +72,7 @@ def parse_response(hexastring):
     # Processing header -----------------------------------------------------------------------------
     header_bytes = []
     for i in range(12): header_bytes.append(hexastring[i])
-    
+
     header_id = concatBytes(header_bytes[0], header_bytes[1])
     # Bit masking 1st half of 2nd row of bytes to get qr, opcode, aa, tc, & rd
     header_qr = 1
@@ -86,7 +88,7 @@ def parse_response(hexastring):
     header_an_count = concatBytes(header_bytes[6], header_bytes[7])
     header_ns_count = concatBytes(header_bytes[8], header_bytes[9])
     header_ar_count = concatBytes(header_bytes[10], header_bytes[11])
-    
+
     # Processing question ---------------------------------------------------------------------------
     # Keeps track of where we are in the hexastring
     pos = 12;
@@ -114,7 +116,7 @@ def parse_response(hexastring):
         question.append(qtype)
         question.append(qclass)
         questions.append(question)
-    
+
     resource_records = []
     for i in range(header_an_count):
         record = []
@@ -137,14 +139,16 @@ def parse_response(hexastring):
         pos += 2
         record.append(rr_rdlength)
         # Getting rdata
-        rr_rdata = hexastring[pos]
-        for j in range(rr_rdlength-1):
+        rr_rdata = []
+        for j in range(rr_rdlength):
+            rr_rdata.append(hexastring[pos])
             pos += 1
-            rr_rdata = concatBytes(rr_rdata, hexastring[pos])
         record.append(rr_rdata)
         resource_records.append(record)
     
-    
+    print(resource_records)
+    print(header_ar_count)
+
 
     # print(hexastring[12])
     # print(chr(hexastring[13]))
@@ -160,8 +164,8 @@ def concatBytes(x, y):
 
 # Testing Section.
 
-url = "gmu.edu"
-if(len(sys.argv)>1):    
+url = "google.com"
+if(len(sys.argv)>1):
     url = sys.argv[1]
-#get_response(url)
-parse_response(b'\x1f\x07\x81\x80\x00\x01\x00\x01\x00\x00\x00\x00\x03gmu\x03edu\x00\x00\x01\x00\x01\xc0\x0c\x00\x01\x00\x01\x00\x00\x0c\xeb\x00\x04\x81\xae\x86\x1c')
+#
+parse_response(get_response(url))
