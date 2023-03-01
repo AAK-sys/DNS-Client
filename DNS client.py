@@ -5,6 +5,7 @@ import time
 import sys
 
 # TO-DO: fix a major bug that breaks the program when www. is used
+# Cause: a major bug where using www. causes a problem this is due to the change to the value of rd_length(becomes in the thousands/ reading the wrong values), putting this here so I don't forget
 
 # get response from url
 def get_response(URL):
@@ -116,7 +117,6 @@ def parse_response(hexastring):
         question.append(qtype)
         question.append(qclass)
         questions.append(question)
-
     resource_records = []
     for i in range(header_an_count):
         record = []
@@ -147,7 +147,7 @@ def parse_response(hexastring):
         resource_records.append(record)
     
     print(resource_records)
-    print(header_ar_count)
+    
 
 
     # print(hexastring[12])
@@ -164,7 +164,7 @@ def concatBytes(x, y):
 
 # Testing Section.
 
-url = "google.com"
+url = "cnn.com"
 if(len(sys.argv)>1):
     url = sys.argv[1]
 #
