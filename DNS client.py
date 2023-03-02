@@ -8,6 +8,9 @@ import sys
 # Cause: a major bug where using www. causes a problem this is due to the change to the value of rd_length(becomes in the thousands/ reading the wrong values), putting this here so I don't forget
 
 # get response from url
+
+index_url_dict = {}
+
 def get_response(URL):
 
     print("Preparing DNS query..")
@@ -95,6 +98,7 @@ def parse_response(hexastring,url_size):
     pos = 12;
     # We may have more tha one question, so each one will be in an array
     questions = []
+    Cname = []
     for i in range(0, 1):
         question = []
         domain = []
@@ -120,7 +124,7 @@ def parse_response(hexastring,url_size):
         questions.append(question)
     resource_records = []
     for i in range(header_an_count):
-        record = []
+        record =[]
         # Skipping RR name
         pos += 2
         # Getting record type
@@ -141,10 +145,24 @@ def parse_response(hexastring,url_size):
         record.append(rr_rdlength)
         # Getting rdata
         rr_rdata = []
+        part = ""
         for j in range(rr_rdlength):
-            rr_rdata.append(hexastring[pos])
-            pos += 1
-        record.append(rr_rdata)
+            if(rr_rdlength==4):
+                rr_rdata.append(hexastring[pos])
+                pos += 1
+            else:
+                count = hexastring[pos]
+                if(not chr(count).isalpha()):
+                    part+="."
+                else:
+                    part += chr(hexastring[pos])
+                pos+=1
+        part = part.strip(".")
+
+        if(rr_rdlength==4):
+            record.append(rr_rdata)
+        else:
+            record.append(part)
         resource_records.append(record)
     
     print(resource_records)
@@ -165,7 +183,7 @@ def concatBytes(x, y):
 
 # Testing Section.
 
-url = "www.google.com"
+url = "www.cnn.com"
 if(len(sys.argv)>1):
     url = sys.argv[1]
 #
