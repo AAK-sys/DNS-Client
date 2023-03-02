@@ -61,10 +61,10 @@ def get_response(URL):
     print("processing DNS response..")
     print('-' * 85)
     print(response)
-    return response
+    return [response, len(url.split('.'))]
 
 #parse the dns server response
-def parse_response(hexastring):
+def parse_response(hexastring,url_size):
     # gmu.edu response example. Some websites have multiple IP addresses that the dns resolves hence multiple
     # hexadecimal responses or a longer hexadecimal. How this will affect the parsing is still unknown.
 
@@ -95,11 +95,11 @@ def parse_response(hexastring):
     pos = 12;
     # We may have more tha one question, so each one will be in an array
     questions = []
-    for i in range(0, header_qd_count):
+    for i in range(0, 1):
         question = []
         domain = []
         # Getting domain/qname
-        for j in range(3):
+        for j in range(url_size):
             count_octet = hexastring[pos]
             part = ""
             for z in range(count_octet):
@@ -107,6 +107,7 @@ def parse_response(hexastring):
                 part += chr(hexastring[pos])
             domain.append(part)
             pos += 1
+        pos+=1
         question.append(domain)
         # Getting qtype
         qtype = concatBytes(hexastring[pos], hexastring[pos+1])
@@ -164,8 +165,9 @@ def concatBytes(x, y):
 
 # Testing Section.
 
-url = "cnn.com"
+url = "www.google.com"
 if(len(sys.argv)>1):
     url = sys.argv[1]
 #
-parse_response(get_response(url))
+info = get_response(url)
+parse_response(info[0], info[1])
