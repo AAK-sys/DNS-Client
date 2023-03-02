@@ -147,15 +147,36 @@ def parse_response(hexastring,url_size):
         record.append(rr_rdata)
         resource_records.append(record)
     
-    print(resource_records)
+    # Printing header section
+    print("header.ID = ",header_id)
+    print("header.QR = ",header_qr)
+    print("header.OPCODE = ",header_opcode)
+    print("header.AA = ",header_aa)
+    print("header.TC = ",header_tc)
+    print("header.RD = ",header_rd)
+    print("header.RA = ",header_ra)
+    print("header.Z = ",header_z)
+    print("header.RCODE = ",header_rcode)
+    print("header.QDCOUNT = ",header_qd_count)
+    print("header.ANCOUNT = ",header_an_count)
+    print("header.NSCOUNT = ",header_ns_count)
+    print("header.ARCOUNT = ",header_ar_count)
+
+    # Printing question section
+    question = questions[0]
+    print("question.QNAME = ",'.'.join(question[0]))
+    print("question.QTYPE = ",question[1])
+    print("question.QCLASS = ",question[2])
     
+    # Printing answer section
+    for val in resource_records:
+        print("answer.NAME = ",'.'.join(question[0]))
+        print("answer.TYPE = ",val[0])
+        print("answer.CLASS = ",val[1])
+        print("answer.TTL = ",val[2])
+        print("answer.RDLENGTH = ",val[3])
+        print("answer.RDATA = ", ('.'.join(str(chr) for chr in val[4])) )
 
-
-    # print(hexastring[12])
-    # print(chr(hexastring[13]))
-    # print(hexastring[14])
-    # print(hexastring[15])
-    # print(hexastring[16])
 
 # Helper function that concats 2 octets into single 16 bit int, (all bin values must be in int form)
 def concatBytes(x, y):
@@ -165,7 +186,7 @@ def concatBytes(x, y):
 
 # Testing Section.
 
-url = "www.google.com"
+url = "gmu.edu"
 if(len(sys.argv)>1):
     url = sys.argv[1]
 #
